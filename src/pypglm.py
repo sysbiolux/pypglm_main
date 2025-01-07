@@ -1375,7 +1375,7 @@ class ProbabilisticGraphicalLogicalModel:
             for result in detailed_results
         ]
 
-        df = pd.DataFrame(all_flattened_data)
+        self.df = pd.DataFrame(all_flattened_data)
 
         # Extracting variables for plotting
         formatted_lambdas = ['base'] + [f'{value:.8f}'.rstrip('0').rstrip('.') for value in PowerLambda]
@@ -1451,7 +1451,7 @@ class ProbabilisticGraphicalLogicalModel:
         plt.tight_layout()
         plt.show()
 
-        return df
+        return self.df
 
 
 
