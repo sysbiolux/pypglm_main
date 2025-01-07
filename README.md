@@ -54,7 +54,7 @@ To correctly model the network with its experimental data:
   be presented as 3 distinct sheets within the same corresponding file.
 
 Examples demonstrating how to run the optimization and regularization are provided in 'Driver_PYPGLM_Optimization' and 
-'Driver_PYPGLM_Regularization' files, respectively." [here is the link](https://github.com/sysbiolux/pypglm_main)
+'Driver_PYPGLM_Regularization' files, respectively." [here is the link](https://github.com/sysbiolux/pypglm_main/tree/main/examples)
 
 ## Optimization
 
