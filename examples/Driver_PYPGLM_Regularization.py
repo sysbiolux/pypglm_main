@@ -128,7 +128,7 @@ pglm.gradient_descent(initialization_option='xavier', method='SLSQP', reg_type='
 #   - The list of suffixes for conditions or experiments that require regularization
 #     is specified by the "suffixes" argument.
 
-#     This method returns a dataframe that include the following:
+#     This method returns a dataframe located in the pglm instance that include the following:
 #   - 'Lambda': The lambda value used in the evaluation.
 #   - 'BIC': The Bayesian Information Criterion value for the evaluation.
 #   - 'MSE': The Mean Squared Error value.

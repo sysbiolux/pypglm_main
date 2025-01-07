@@ -1015,7 +1015,7 @@ class ProbabilisticGraphicalLogicalModel:
                                 suffixes=None):
 
         """
-        A method for obtaining the BIC for each Regularization strength (Lambda)
+        Private method for obtaining the BIC for each Regularization strength (Lambda)
         """
 
         lambda_bics = []
@@ -1323,10 +1323,9 @@ class ProbabilisticGraphicalLogicalModel:
 
         return all_simulated_outputs
 
-    def regularization_metrics_analysis(self, starting_reg_level=None, ending_reg_level=None, step_reg=None,
-                                        initialization_option=None,
-                                        method=None, reg_type='none',
-                                        suffixes=None):
+    def regularization_metrics_analysis(self, starting_reg_level=None, ending_reg_level=None, step_reg=None, initialization_option=None,
+                                method=None, reg_type='none',
+                                suffixes=None):
         """
         A method for obtaining the regularization evaluation metrics
         (total cost, regularization cost, MSE, BIC and BIC parameter count) for
@@ -1375,7 +1374,8 @@ class ProbabilisticGraphicalLogicalModel:
             for result in detailed_results
         ]
 
-        self.df = pd.DataFrame(all_flattened_data)
+        df = pd.DataFrame(all_flattened_data)
+        self.df = df
 
         # Extracting variables for plotting
         formatted_lambdas = ['base'] + [f'{value:.8f}'.rstrip('0').rstrip('.') for value in PowerLambda]
@@ -1397,61 +1397,53 @@ class ProbabilisticGraphicalLogicalModel:
 
         # Plot 1: BIC vs Lambda
         plt.figure(figsize=(10, 5))
-        plt.plot(formatted_lambdas, python_BIC, linestyle='-', color='b', marker='o', label='PYPGLM')
+        plt.plot(formatted_lambdas, python_BIC, linestyle='-', color='b', marker='o')
         plt.plot(formatted_lambdas[min_python_idx], python_BIC[min_python_idx], '*', color='#fd1300', markersize=10)
         plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
         plt.ylabel('BIC', fontweight='bold', fontsize=16)
         plt.xticks(rotation=90, ha="right")
         plt.grid(True)
-        plt.legend(fontsize=14, loc="best")
         plt.tight_layout()
         plt.show()
 
         # Plot 2: Number of Parameters vs Lambda
         plt.figure(figsize=(10, 5))
-        plt.plot(formatted_lambdas, python_Nparams, linestyle='-', color='b', marker='o', label='PYPGLM')
+        plt.plot(formatted_lambdas, python_Nparams, linestyle='-', color='b', marker='o')
         plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
         plt.ylabel('Number of Parameters', fontweight='bold', fontsize=16)
         plt.xticks(rotation=90, ha="right")
         plt.grid(True)
-        plt.legend(fontsize=14, loc="best")
         plt.tight_layout()
         plt.show()
 
         # Plot 3: Log10 of MSE vs Lambda
         plt.figure(figsize=(10, 6))
-        plt.plot(formatted_lambdas, python_MSE_log10, marker='o', linestyle='-', color='b', label='PYPGLM')
+        plt.plot(formatted_lambdas, python_MSE_log10, marker='o', linestyle='-', color='b')
         plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
         plt.ylabel('Log10 of Mean Squared Error (MSE)', fontweight='bold', fontsize=16)
         plt.xticks(rotation=90, ha="right")
         plt.grid(True)
-        plt.legend(fontsize=14, loc="best")
         plt.tight_layout()
         plt.show()
 
         # Plot 4: Log10 of Regularization Cost vs Lambda
         plt.figure(figsize=(10, 6))
-        plt.plot(formatted_lambdas, python_regularization_cost, marker='o', linestyle='-', color='b', label='PYPGLM')
+        plt.plot(formatted_lambdas, python_regularization_cost, marker='o', linestyle='-', color='b')
         plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
         plt.ylabel('Log10 of Regularization Cost', fontweight='bold', fontsize=16)
         plt.xticks(rotation=90, ha="right")
         plt.grid(True)
-        plt.legend(fontsize=14, loc="best")
         plt.tight_layout()
         plt.show()
 
         # Plot 5: Log10 of Total Cost vs Lambda
         plt.figure(figsize=(10, 6))
-        plt.plot(formatted_lambdas, python_total_cost, marker='o', linestyle='-', color='b', label='PYPGLM')
+        plt.plot(formatted_lambdas, python_total_cost, marker='o', linestyle='-', color='b')
         plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
         plt.ylabel('Log10 of Total Cost', fontweight='bold', fontsize=16)
         plt.xticks(rotation=90, ha="right")
         plt.grid(True)
-        plt.legend(fontsize=14, loc="best")
         plt.tight_layout()
         plt.show()
 
         return self.df
-
-
-
