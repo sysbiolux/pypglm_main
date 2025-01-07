@@ -1015,7 +1015,7 @@ class ProbabilisticGraphicalLogicalModel:
                                 suffixes=None):
 
         """
-        Private method for obtaining the BIC for each Regularization strength (Lambda)
+        A method for obtaining the BIC for each Regularization strength (Lambda)
         """
 
         lambda_bics = []
@@ -1322,3 +1322,136 @@ class ProbabilisticGraphicalLogicalModel:
         plt.show()
 
         return all_simulated_outputs
+
+    def regularization_metrics_analysis(self, starting_reg_level=None, ending_reg_level=None, step_reg=None,
+                                        initialization_option=None,
+                                        method=None, reg_type='none',
+                                        suffixes=None):
+        """
+        A method for obtaining the regularization evaluation metrics
+        (total cost, regularization cost, MSE, BIC and BIC parameter count) for
+        each Regularization strength (Lambda).
+        It generates plots for all these metrics.
+        """
+
+        PowerLambda = np.arange(starting_reg_level, ending_reg_level, step_reg)
+        exponentiated_values = 2.0 ** PowerLambda
+        ListLambda = np.insert(exponentiated_values, 0, 0)
+
+        detailed_results = []
+
+        # Running gradient descent for each lambda value
+        for reg_lambda in ListLambda:
+            results = self.gradient_descent(
+                initialization_option=initialization_option,
+                method=method,
+                reg_type=reg_type,
+                reg_lambda=reg_lambda, suffixes=suffixes
+            )
+
+            detailed_results.append({
+                'Lambda': reg_lambda,
+                'BIC': results['BIC'],
+                'MSE': results['MSE'],
+                'Regularization_Cost': results['regularization_cost'],
+                'Total_Cost': results['total_cost'],
+                'Parameters': results['parameters'],
+                'Time': results.get('time', None),
+                'Number_of_Parameters': results.get('num_parameters', None)
+            })
+
+        # Flattening the detailed_results into a DataFrame
+        all_flattened_data = [
+            {
+                'Lambda': result.get('Lambda'),
+                'BIC': result.get('BIC'),
+                'MSE': result.get('MSE'),
+                'Regularization_Cost': result.get('Regularization_Cost'),
+                'Total_Cost': result.get('Total_Cost'),
+                'Parameters': result.get('Parameters'),
+                'Time': result.get('Time', None),
+                'Number_of_Parameters': result.get('Number_of_Parameters', None)
+            }
+            for result in detailed_results
+        ]
+
+        df = pd.DataFrame(all_flattened_data)
+
+        # Extracting variables for plotting
+        formatted_lambdas = ['base'] + [f'{value:.8f}'.rstrip('0').rstrip('.') for value in PowerLambda]
+        python_BIC = df['BIC']
+        python_Nparams = df['Number_of_Parameters']
+        python_MSE_log10 = np.log10(df['MSE'])
+        python_regularization_cost = np.log10(df['Regularization_Cost'])
+        python_total_cost = np.log10(df['Total_Cost'])
+
+        # Finding minimum and second minimum indices
+        def find_min_indices(arr):
+            min_idx = np.argmin(arr)
+            arr_with_inf = np.copy(arr)
+            arr_with_inf[min_idx] = np.inf
+            second_min_idx = np.argmin(arr_with_inf)
+            return min_idx, second_min_idx
+
+        min_python_idx, second_lowest_idx = find_min_indices(python_BIC)
+
+        # Plot 1: BIC vs Lambda
+        plt.figure(figsize=(10, 5))
+        plt.plot(formatted_lambdas, python_BIC, linestyle='-', color='b', marker='o', label='PYPGLM')
+        plt.plot(formatted_lambdas[min_python_idx], python_BIC[min_python_idx], '*', color='#fd1300', markersize=10)
+        plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
+        plt.ylabel('BIC', fontweight='bold', fontsize=16)
+        plt.xticks(rotation=90, ha="right")
+        plt.grid(True)
+        plt.legend(fontsize=14, loc="best")
+        plt.tight_layout()
+        plt.show()
+
+        # Plot 2: Number of Parameters vs Lambda
+        plt.figure(figsize=(10, 5))
+        plt.plot(formatted_lambdas, python_Nparams, linestyle='-', color='b', marker='o', label='PYPGLM')
+        plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
+        plt.ylabel('Number of Parameters', fontweight='bold', fontsize=16)
+        plt.xticks(rotation=90, ha="right")
+        plt.grid(True)
+        plt.legend(fontsize=14, loc="best")
+        plt.tight_layout()
+        plt.show()
+
+        # Plot 3: Log10 of MSE vs Lambda
+        plt.figure(figsize=(10, 6))
+        plt.plot(formatted_lambdas, python_MSE_log10, marker='o', linestyle='-', color='b', label='PYPGLM')
+        plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
+        plt.ylabel('Log10 of Mean Squared Error (MSE)', fontweight='bold', fontsize=16)
+        plt.xticks(rotation=90, ha="right")
+        plt.grid(True)
+        plt.legend(fontsize=14, loc="best")
+        plt.tight_layout()
+        plt.show()
+
+        # Plot 4: Log10 of Regularization Cost vs Lambda
+        plt.figure(figsize=(10, 6))
+        plt.plot(formatted_lambdas, python_regularization_cost, marker='o', linestyle='-', color='b', label='PYPGLM')
+        plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
+        plt.ylabel('Log10 of Regularization Cost', fontweight='bold', fontsize=16)
+        plt.xticks(rotation=90, ha="right")
+        plt.grid(True)
+        plt.legend(fontsize=14, loc="best")
+        plt.tight_layout()
+        plt.show()
+
+        # Plot 5: Log10 of Total Cost vs Lambda
+        plt.figure(figsize=(10, 6))
+        plt.plot(formatted_lambdas, python_total_cost, marker='o', linestyle='-', color='b', label='PYPGLM')
+        plt.xlabel('Lambda Values', fontweight='bold', fontsize=16)
+        plt.ylabel('Log10 of Total Cost', fontweight='bold', fontsize=16)
+        plt.xticks(rotation=90, ha="right")
+        plt.grid(True)
+        plt.legend(fontsize=14, loc="best")
+        plt.tight_layout()
+        plt.show()
+
+        return df
+
+
+

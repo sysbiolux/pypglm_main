@@ -114,9 +114,11 @@ suffixes = ['_parental', '_izi_cond']
 pglm.gradient_descent(initialization_option='xavier', method='SLSQP', reg_type='L1Groups', reg_lambda=2.0 ** -8, suffixes=suffixes)
 
 # 7. To evaluate the regularization metrics across a specific range of regularization strength
-#    (e.g., from -12 to -2 with increments of 0.5), use evaluate_bic_for_lambda() method,
+#    (e.g., from -12 to -2 with increments of 0.5), use regularization_metrics_analysis() method,
 #    which requires the following parameters:
-#  - lambda_values: A list of lambda values to evaluate.
+#   - starting_reg_level: The starting value of the regularization strength (Lambda).
+#   - ending_reg_level: The ending value of the regularization strength (Lambda).
+#   - step_reg: The step size used to increment the regularization strength (Lambda).
 #   - Initialization Option: Users can select an initialization distribution from:
 #     ['uniform', 'xavier', 'he'] using the "initialization_option" argument.
 #   - Optimization Method: The user can choose their optimization method from:
@@ -125,54 +127,31 @@ pglm.gradient_descent(initialization_option='xavier', method='SLSQP', reg_type='
 #     Examples include 'L1', 'L2', or 'L1Groups'.
 #   - The list of suffixes for conditions or experiments that require regularization
 #     is specified by the "suffixes" argument.
-#     This method returns the following:
-#  - 'lambda_bics': The BIC value corresponding to each Lambda value
 
-#  - 'detailed_results': which includes the following:
-#  - 'Lambda': The lambda value used in the evaluation.
-#  - 'BIC': The Bayesian Information Criterion value for the evaluation.
-#  - 'MSE': The Mean Squared Error value.
-#  - 'Regularization_Cost': The cost due to regularization.
-#  - 'Total_Cost': The total cost combining the model's fitting cost and regularization.
-#  - 'Parameters': The number of parameters used in the model.
-#  - 'Time': The time taken for the evaluation (can be None if not available).
-#  - 'Number_of_Parameters': The number of BIC parameters used, can be None if not available.
+#     This method returns a dataframe that include the following:
+#   - 'Lambda': The lambda value used in the evaluation.
+#   - 'BIC': The Bayesian Information Criterion value for the evaluation.
+#   - 'MSE': The Mean Squared Error value.
+#   - 'Regularization_Cost': The cost due to regularization.
+#   - 'Total_Cost': The total cost combining the model's fitting cost and regularization.
+#   - 'Parameters': The number of parameters used in the model.
+#   - 'Time': The time taken for the evaluation (can be None if not available).
+#   - 'Number_of_Parameters': The number of BIC parameters used, can be None if not available.
 
-#  - 'num_parameters_list': A list of the BIC parameter count across the range of Lambda
+#     The output is accompanied by plots for each metric.
 
 
-PowerLambda = np.arange(-12, -1.5, 0.5)
-exponentiated_values = 2.0 ** PowerLambda
-ListLambda = np.insert(exponentiated_values, 0, 0)
 suffixes = ['_parental', '_izi_cond']
 
-
-all_flattened_data = []
-
-lambda_bics, detailed_results, num_parameters_list = pglm.evaluate_bic_for_lambda(
-    lambda_values=ListLambda,
+pglm.regularization_metrics_analysis(starting_reg_level=-12, ending_reg_level=-1.5, step_reg=0.5,
     initialization_option='xavier',
     method='SLSQP',
     reg_type='L1Groups',
     suffixes=suffixes
 )
 
-# Iterating over the detailed_results
-for result in detailed_results:
-    all_flattened_data.append(
-        {
-            'Lambda': result.get('Lambda'),
-            'BIC': result.get('BIC'),
-            'MSE': result.get('MSE'),
-            'Regularization_Cost': result.get('Regularization_Cost'),
-            'Total_Cost': result.get('Total_Cost'),
-            'Parameters': result.get('Parameters'),
-            'Time': result.get('Time', None),
-            'Number_of_Parameters': result.get('Number_of_Parameters', None)
-        }
-    )
-# Building a dataframe for the all_flattened_data for better readability:
-df = pd.DataFrame(all_flattened_data)
+
+
 
 
 '''
