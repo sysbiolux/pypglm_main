@@ -7,7 +7,7 @@ import time
 import pickle
 import math
 from scipy.optimize import minimize, LinearConstraint, Bounds
-from src.utils import *
+from PYPGLM.utils import *
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
