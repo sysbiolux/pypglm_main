@@ -32,7 +32,11 @@ import os
 # 2. Integrating the network with its associated experimental data:
 # 2.1 Loading the network topology model (e.g., PDGF model) from the specified file path:
 #     The model is stored in an Excel file located in the 'data/legacy/' directory.
-test_model = os.path.join("data/legacy/PDGF/PDGF_model.xlsx")
+
+try:
+    test_model = os.path.join("data/legacy/PDGF/PDGF_model.xlsx")
+except:
+    test_model = os.path.join("../data/legacy/PDGF/PDGF_model.xlsx")
 
 # 2.2 Initializing the Probabilistic Graphical Logical Model instance:
 pglm = ProbabilisticGraphicalLogicalModel()
@@ -41,7 +45,10 @@ pglm = ProbabilisticGraphicalLogicalModel()
 pglm.load_network(test_model)
 
 # 2.4 Loading the associated experimental data for the network model from the specified Excel file:
-pglm.load_data("data/legacy/PDGF/PDGF_meas.xlsx")
+try:
+    pglm.load_data("data/legacy/PDGF/PDGF_meas.xlsx")
+except:
+    pglm.load_data("../data/legacy/PDGF/PDGF_meas.xlsx")
 
 # 3. Sanity checks (validating the Probabilistic Graphical Logical Model building):
 pglm.check_network_consistency()

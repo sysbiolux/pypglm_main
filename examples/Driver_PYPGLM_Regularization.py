@@ -40,9 +40,17 @@ import numpy as np
 #    suffix list (e.g., the suffixes of all the cell lines to be combined in a list) through suffix_list argument,
 #    output file path (the desired path to save the globalized model) through output_file_path argument.
 
-input_file = "data/legacy/DelMistro2018/crosstalk_model_final.xlsx"
+try:
+    input_file = "data/legacy/DelMistro2018/crosstalk_model_final.xlsx"
+except:
+    input_file = "../data/legacy/DelMistro2018/crosstalk_model_final.xlsx"
+
 suffix_list = ['parental', 'izi_cond']
-output_file_path = "data/legacy/DelMistro2018/DelMistro_Global_model.xlsx"
+
+try:
+    output_file_path = "data/legacy/DelMistro2018/DelMistro_Global_model.xlsx"
+except:
+    output_file_path = "../data/legacy/DelMistro2018/DelMistro_Global_model.xlsx"
 
 create_a_global_model(input_file, suffix_list, output_file_path)
 
@@ -57,22 +65,53 @@ create_a_global_model(input_file, suffix_list, output_file_path)
 #    global data file path (the desired path to save the globalized data) through global_data_path argument.
 
 
-input_df = pd.read_excel("data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='input')
-output_df_cell_line1 = pd.read_excel("data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='output')
-output_df_cell_line2 = pd.read_excel("data/legacy/DelMistro2018/crosstalk_izi_cond_16h.xlsx", sheet_name='output')
+try:
+    input_df = pd.read_excel("data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='input')
+except:
+    input_df = pd.read_excel("../data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='input')
+
+try:
+    output_df_cell_line1 = pd.read_excel("data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='output')
+except:
+    output_df_cell_line1 = pd.read_excel("../data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='output')
+
+try:
+    output_df_cell_line2 = pd.read_excel("data/legacy/DelMistro2018/crosstalk_izi_cond_16h.xlsx", sheet_name='output')
+except:
+    output_df_cell_line2 = pd.read_excel("../data/legacy/DelMistro2018/crosstalk_izi_cond_16h.xlsx", sheet_name='output')
+
+
 list_data_outputs = [output_df_cell_line1, output_df_cell_line2]
-error_df_cell_line1 = pd.read_excel("data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='error')
-error_df_cell_line2 = pd.read_excel("data/legacy/DelMistro2018/crosstalk_izi_cond_16h.xlsx", sheet_name='error')
+
+
+try:
+    error_df_cell_line1 = pd.read_excel("data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='error')
+except:
+    error_df_cell_line1 = pd.read_excel("../data/legacy/DelMistro2018/crosstalk_parental_16h.xlsx", sheet_name='error')
+
+try:
+    error_df_cell_line2 = pd.read_excel("data/legacy/DelMistro2018/crosstalk_izi_cond_16h.xlsx", sheet_name='error')
+except:
+    error_df_cell_line2 = pd.read_excel("../data/legacy/DelMistro2018/crosstalk_izi_cond_16h.xlsx", sheet_name='error')
+
 list_data_errors = [error_df_cell_line1, error_df_cell_line2]
 suffix_list = ['parental', 'izi_cond']
-global_data_path = "data/legacy/DelMistro2018/DelMistro_combined_data.xlsx"
+
+
+try:
+    global_data_path = "data/legacy/DelMistro2018/DelMistro_combined_data.xlsx"
+except:
+    global_data_path = "../data/legacy/DelMistro2018/DelMistro_combined_data.xlsx"
 
 create_a_global_data(input_df, list_data_outputs, list_data_errors, suffix_list, global_data_path)
 
 
 # 4. Integrating the globalized network with its associated globalized experimental data:
 # 4.1 Loading the network topology model (e.g., DelMistro model) from the specified file path:
-test_model = os.path.join("data/legacy/DelMistro2018/DelMistro_Global_model.xlsx")
+try:
+    test_model = os.path.join("data/legacy/DelMistro2018/DelMistro_Global_model.xlsx")
+except:
+    test_model = os.path.join("../data/legacy/DelMistro2018/DelMistro_Global_model.xlsx")
 
 # 4.2 Initializing the Probabilistic Graphical Logical Model instance:
 pglm = ProbabilisticGraphicalLogicalModel()
@@ -81,7 +120,10 @@ pglm = ProbabilisticGraphicalLogicalModel()
 pglm.load_network(test_model)
 
 # 4.4 Loading the associated experimental data for the network model from the specified Excel file:
-pglm.load_data("data/legacy/DelMistro2018/DelMistro_combined_data.xlsx")
+try:
+    pglm.load_data("data/legacy/DelMistro2018/DelMistro_combined_data.xlsx")
+except:
+    pglm.load_data("../data/legacy/DelMistro2018/DelMistro_combined_data.xlsx")
 
 # 5. Sanity checks (validating the Probabilistic Graphical Logical Model building):
 pglm.check_network_consistency()
